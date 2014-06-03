@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+<title>Angular.cl</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+
+</head>
+<div data-role="page" id="foo">
+
+<script>
+$(document).on('pageshow', '#foo',  function(){
+           
+            function leerGET(){ 
+            var cadGET = location.search.substr(1,location.search.length); 
+            var arrGET = cadGET.split("&"); 
+            var asocGET = new Array(); 
+            var variable = ""; 
+            var valor = ""; 
+                for(i=0;i<arrGET.length;i++){ 
+                var aux = arrGET[i].split("="); 
+                variable = aux[0]; 
+                valor = aux[1]; 
+                asocGET[variable] = valor; 
+                    } 
+                return asocGET; 
+            } 
+            
+            var paresVarValor = leerGET();
+            var token = window.sessionStorage.getItem("token_sesion");
+            var venta = $('#ventana').val();
+          var enti = $('#entidad').val();          
+           //$('#id_sucursal').append(paresVarValor['id_sucursal']);
+             
+              
+           $.ajax({
+              
+                
+                url:   'http://192.168.1.183/angular/aplicacion/BusinessLogic/hibrida/poblar_informe_punto_venta.php',
+                type:  'post',
+                data: ({token_sesion: token, ventana: venta, entidad: enti, id_sucursal:paresVarValor['id_sucursal']}),
+                dataType: 'json',
+                beforeSend: function () {
+                        //$("#formulario").html("Procesando, espere por favor...");
+                
+                },
+                
+               
+                success:  function (response) {
+                   
+                   var dataJson = eval(response);
+                     
+                    for(var i in dataJson){
+                        
+                        //var nombre = (dataJson[i].NOMBRE);
+                        var fecha = (dataJson[i].FECHA);
+                        var cod_local = (dataJson[i].COD_LOCAL);
+                        var nombre_fantasia = (dataJson[i].NOM_FANTASIA);
+                        var supervisor = (dataJson[i].SUPERVISOR);
+                        var vendedor = (dataJson[i].VENDEDOR);
+                        var zona = (dataJson[i].ZONA);
+                        
+                        document.getElementById("fecha").value = fecha;
+                        document.getElementById("codigo_local_old").value = cod_local;
+                        document.getElementById("nombre_fantasia_old").value = nombre_fantasia;
+                        document.getElementById("supervisor_old").value = supervisor;
+                        document.getElementById("id_vendedor").value = vendedor;
+                        document.getElementById("id_zonal").value = zona;
+                        
+                        //$("#formulario").append(html);
+                        //$("#formulario").listview("refresh");
+                      }  
+                   
+               }
+        });   
+       });
+       
+    </script>
+
+<div data-role="panel" data-position-fixed="true" id="nav-panel_left" data-display="reveal" data-position="left"><div align="center"><img src="../plugins/imagenes/plataforma/logo_angular_muy_chico.png"></div><div data-role="collapsible-set" data-theme="b" data-content-theme="d" data-inset=""><div data-role="collapsible"><h2>Inicio</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/principal/principal.html" rel="external">Panel</a></li></ul></div><div data-role="collapsible"><h2>Sucursales</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/lista_sucursales.html" rel="external">Lista sucursales</a></li><li><a href="file:///android_asset/www/aplicacion/mapa_sucursales.html" rel="external">Mapa sucursales</a></li><li><a href="file:///android_asset/www/aplicacion/gestion_sucursal.html" rel="external">Gestión sucursales</a></li><li><a href="file:///android_asset/www/aplicacion/ficha_galeria_imagenes.html" rel="external">Galería fotos</a></li></ul></div><div data-role="collapsible"><h2>Informes</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/informe_gestion_di.html" rel="external">Informe Gestión DI</a></li></ul></div><div data-role="collapsible"><h2>Gestión usuario</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/ficha_panel.html" rel="external">Panel usuario</a></li></ul></div><div data-role="collapsible"><h2>Gráficos</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/ficha_prospecto.html" rel="external">Ingresar prospecto</a></li></ul></div><div data-role="collapsible"><h2>Usuarios</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/ficha_cambio_clave.html" rel="external">Cambiar contraseña</a></li></ul></div><div data-role="collapsible"><h2>Accesos</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/soporte.html" rel="external">Soporte</a></li></ul></div></div></div><div  data-role="panel" data-position-fixed="true" id="nav-panel_right" data-display="reveal" data-position="right"><div align="center"><img src="../plugins/imagenes/plataforma/logo_angular_muy_chico.png"></div><div><ul data-role="listview" data-inset="true" data-icon="false"><li data-role="list-divider">Descripción informes</li><li><a href="#"><h2>IPdV MAY</h2><p>Informe punto de venta mayorista</p><h2>IPdV SPM</h2><p>Informe punto de venta supermercado</p><h2>IPdV COB</h2><p>Informe punto de venta cobertura</p></a></li></ul></div><div><ul data-role="listview" data-inset="true" data-icon="false"><li data-role="list-divider">Sincronización</li><li><div data-role="controlgroup"><a onclick=Zincronizable(); data-role="button" data-icon="refresh">Sincronizar</a><a onclick=EliminarDatosLocal(); data-role="button" data-icon="delete">Borrar Todo</a></div><br><p id="var_cantidadOff"></p></li></ul></div><div><ul data-role="listview" data-inset="true" data-icon="false"><li data-role="list-divider">Configuración</li><li><div data-role="controlgroup"><a href="../aplicacion/window.php?ventana=ficha_configuracion"; data-role="button" data-icon="grid" rel="external">Parámetros</a></div></li></ul></div></div><div data-role="header" class="header-gradient" data-theme="a" data-position="fixed" data-fullscreen="false"><div align="center"><h1>IPdV - MAY</h1></div><div class="ui-btn-left" data-role="controlgroup" data-type="horizontal"><a href="#nav-panel_left" class="ui-nodisc-icon" data-role="button" id="menu" data-icon="filing-cabinet" data-iconpos="notext" ></a><a href="#" class="ui-nodisc-icon" onclick="volver(document);" data-role="button" id="menu" data-icon="reply" data-iconpos="notext"></a></div><div class="ui-btn-right" data-role="controlgroup" data-type="horizontal"><a href="../autentificacion/logout.html" class="ui-nodisc-icon" data-transition="none" data-role="button" id="menu_rojo" data-icon="plus-circle" data-iconpos="notext"></a><a href="#nav-panel_right" class="ui-nodisc-icon" data-role="button" id="menu" data-icon="gear" data-iconpos="notext" onclick=ConsultaSincronizar()></a></div></div>
+<style> 
+
+.flotante1 {
+  display:scroll;position:fixed;bottom:320px;right:0px;
+}
+
+.flotante2 {
+  display:scroll;position:fixed;bottom:495px;right:0px;
+}
+
+.flotante3 {
+  display:scroll;position:fixed;bottom:450px;right:0px;
+}
+
+</style>
+
+
+
+
+
+
+<body bgcolor="C6C6C6" onLoad=definirCampoFoco("sucursalForm.mercaderista","mapa_sucursales","informe_punto_venta");cargar_datos_ficha("sucursalForm.mercaderista");><div data-role="content">
+<script>
+  //PARAMETROS JSCRIPT DE LA ENTIDAD
+  formulario = "informe_punto_ventaForm";
+</script>
+
+<DIV align=1><form name='informe_punto_ventaForm' onSubmit='' method='post' action='' target=''><DIV id='TITULOinforme_punto_ventainforme_punto_venta'></div>  
+  <input type='hidden' name='var_background_color' value=''>
+  <input type='hidden' name='var_disabled' value=''>
+  <input type='hidden' name='var_ancho' value=''>
+  <input type='hidden' name='var_altura' value=''>
+  <input type='hidden' name='var_valor_default' value='^^^^ ^fecha_actual^^^^^^^^^^^50^^^^^^^^^^^^^^^^^^^^^^^^'>
+  <input type='hidden' name='var_tipo' value='hidden^hidden^hidden^hidden^hidden^input^hidden^hidden^input^input^input^input^input^select^lista^select^textarea^select^textarea^lista_basica^lista_basica^select^select^select^select^textarea^lista_basica_check^lista^lista_basica^lista^textarea^textarea^select^select^textarea^select^input^textarea^select^lista_basica_check^textarea'>
+  <input type='hidden' name='var_text_align' value=''>
+  <input type='hidden' name='var_metadata' value='distancia^lat^lon^id_sucursal^id_tipo_informe^fecha^fecha_hora_envia^id_formato_envio^codigo_local_old^nombre_fantasia_old^supervisor_old^id_vendedor^id_zonal^mercaderista^evaluacion2^objetivo^valor_objetivo^meta^valor_meta^incentivos_activos^incentivos_futuros^ajuste^sugerido^planograma^vencimiento^productos_vencidos^quiebre_bestseller^promociones_activas^promociones_activas_informadas^promociones_futuras^promocion_competencia^accion_competencia^exhibiciones_adicionales^exhibiciones^nombre_exhibicion^promotora^cantidad_promotora^nombre_promotora^oportunidades_venta^tareas_pendientes^tarea_actual'>
+  <input type='hidden' name='var_tipo_uso_formulario' value='transaccion'>
+  <input type='hidden' name='var_tipo_estructura' id='var_tipo_estructura' value='2'>
+  <input type='hidden' name='var_campo_asociado' value='^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'>
+  <input type='hidden' name='var_desde_bd' value='s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s'>
+  <input type='hidden' name='var_hacia_bd' value='s^s^s^s^s^s^s^s^n^n^n^n^n^s^s^s^s^s^s^s^s^s^s^s^s^s^s^s^n^s^s^s^s^s^s^s^s^s^s^s^s'>
+  <input type='hidden' name='var_form_totales' value=''>
+  <input type='hidden' name='var_ficha_desde_transaccion' value='N'>
+  <input type='hidden' name='var_nombre_campo' value=''>
+  <input type='hidden' name='var_accion_jscript' value=''>
+  <input type='hidden' name='var_requeridos' value=''>
+  <input type='hidden' name='var_bot_modificar' value=''>
+  <input type='hidden' name='var_bot_eliminar' value=''>
+  <input type='hidden' name='var_bot_anular' value=''>
+  <input type='hidden' name='var_bot_visualizar' value=''>
+  <input type='hidden' name='var_col_cantidad' value=''>
+  <input type='hidden' name='var_col_monto' value=''>
+  <input type='hidden' name='var_col_descuento' value=''>
+  <input type='hidden' name='var_col_total' value=''>
+  <input type='hidden' name='var_largo_ventana_px' value=''>
+  <input type='hidden' name='var_ancho_ventana_px' value=''>
+  <input type='hidden' name='var_tiene_totales' value=''>
+  <input type='hidden' name='var_edit_row' value=''>
+  <input type='hidden' name='var_del_row' value=''>
+  <input type='hidden' name='var_del_bd' value=''>
+  <input type='hidden' name='var_key_id' value='id_sucursal,fecha'>
+  <input type='hidden' name='var_entidad_madre' value=''>
+  <input type='hidden' name='var_id_first_key_id' value=''>
+  <input type='hidden' name='var_form' value=''>
+  <input type='hidden' name='var_datos' value=''>
+  <input type='hidden' name='var_existe' value=''>
+  <input type='hidden' name='var_accion'>
+  <input type='hidden' name='var_fila' value=''>
+  <input type='hidden' name='var_filas' value='0'>
+  <input type='hidden' name='var_fila_actual' value=''>
+  <input type='hidden' name='var_filas_borradas' value='0'>
+  <input type='hidden' name='var_entidad' value='informe_punto_venta' id="entidad">
+  <input type='hidden' name='var_modo' value=''>
+  <input type='hidden' name='var_path_origen' value=''>
+  <input type='hidden' name='var_ventana' value='informe_punto_venta' id="ventana">
+  <input type='hidden' name='var_padre' value='mapa_sucursales'>
+  <input type='hidden' name='var_mostrar_cant_registros_grid' value=''>
+  <input type='hidden' name='var_scrollx'>
+  <input type='hidden' name='var_scrolly'>
+  <input type='hidden' name='var_campos_requeridos' value='mercaderista^evaluacion2^objetivo^meta^ajuste^sugerido^planograma^vencimiento^promociones_activas^promociones_futuras^exhibiciones^promotora'>
+  <input type='hidden' name='var_tipo_requeridos' value='SELECT^LISTA^SELECT^SELECT^SELECT^SELECT^SELECT^SELECT^LISTA^LISTA^SELECT^SELECT'>
+  <input type='hidden' name='var_form_grid_filtro' value=''>
+  <input type='hidden' name='var_cadena_valores_filtro'>
+  <input type='hidden' name='var_ventana_siguiente' value=''>
+  <input type='hidden' name='var_id_punto_venta' value=''>
+  <input type='hidden' name='var_id_caja' value=''>
+  <input type='hidden' name='var_formato_visual' value='^^^^^fecha^^^^^^^^^^^^^moneda^^^^^^^^^^^^^^^^^^^^^^'> 
+  <input type='hidden' name='var_boton_buscar_lupa' value=''> 
+  <input type='hidden' name='var_boton_info' value=''> 
+  <input type='hidden' name='var_paginar' value=''> 
+  <input type='hidden' name='var_blanco_al_guardar' value=''> 
+  <input type='hidden' name='var_ventana_destino' value=''> 
+  <input type='hidden' name='var_imagen_boton' value=''> 
+  <input type='hidden' name='var_botones_show' value=''> 
+  <input type="hidden" name="var_accion_botones" value=""> 
+  <input type="hidden" name="var_cantidad_maxima_ofline" id="var_cantidad_maxima_ofline" value="7"> 
+  <input type="hidden" name="var_OfflineDelete" id="var_OfflineDelete" value=""> 
+  <input type="hidden" name="var_OfflineDeleteImg" id="var_OfflineDeleteImg" value=""> 
+  <input type="hidden" name="varImg64" id="varImg64" value="">
+  <input type="hidden" name="varFecha" id="varFecha" value="2014-04-03">
+  <input type="hidden" name="varUser" id="varUser" value="119">
+  <input type="hidden" name="var_id_sucursal" id="var_id_sucursal" value="49">
+  <input type="hidden" name="var_on_of" id="var_on_of" value="3">
+  <input type="hidden" name="var_tipoComunicacion" id="var_tipoComunicacion" value="0">
+  <input type="hidden" name="varLatLong" id="varLatLong" value="">
+  
+  
+
+<ul data-role="listview" data-inset="true">
+<input type='HIDDEN' name='distancia' value='25.4'>
+<input type='HIDDEN' name='lat' value='-33.4078856'>
+<input type='HIDDEN' name='lon' value='-70.5718901'>
+<input type='HIDDEN' name='id_sucursal' value='49'>
+<input type='HIDDEN' name='id_tipo_informe' value='1'>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="fecha">Fecha:</label>
+<input placeholder="" type="text" name="fecha" id="fecha" onBlur=validar_datos('informe_punto_ventaForm','fecha','FECHA','id_sucursal,fecha','') readonly="true" value="" >
+</li>
+<input type='HIDDEN' name='fecha_hora_envia' value=''>
+<input type='HIDDEN' name='id_formato_envio' value=''>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="codigo_local_old">Código de local:</label>
+<input placeholder="" type="text" name="codigo_local_old" id="codigo_local_old" onBlur=validar_datos('informe_punto_ventaForm','codigo_local_old','','id_sucursal,fecha','') readonly="true" value="" >
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="nombre_fantasia_old">Nombre de fantasía:</label>
+<input placeholder="" type="text" name="nombre_fantasia_old" id="nombre_fantasia_old" onBlur=validar_datos('informe_punto_ventaForm','nombre_fantasia_old','','id_sucursal,fecha','') readonly="true" value="" >
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="supervisor_old">Supervisor:</label>
+<input placeholder="" type="text" name="supervisor_old" id="supervisor_old" onBlur=validar_datos('informe_punto_ventaForm','supervisor_old','','id_sucursal,fecha','') readonly="true" value="" >
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_vendedor">Vendedor:</label>
+<input placeholder="" type="text" name="id_vendedor" id="id_vendedor" onBlur=validar_datos('informe_punto_ventaForm','id_vendedor','','id_sucursal,fecha','') readonly="true" value="" >
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_zonal">Zonal:</label>
+<input placeholder="" type="text" name="id_zonal" id="id_zonal" onBlur=validar_datos('informe_punto_ventaForm','id_zonal','','id_sucursal,fecha','') readonly="true" value="" >
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="mercaderista">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Mercaderista:</label>
+<SELECT name="mercaderista"  id="mercaderista" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">En ruta</OPTION>
+<OPTION VALUE="1">En el local</OPTION>
+<OPTION VALUE="2">Faltó</OPTION>
+<OPTION VALUE="4">Reposición eficiente</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="evaluacion2">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Evaluación mercaderista:</label>
+<div data-role="collapsible-set" data-content-theme="d" id="evaluacion2"> 
+<div data-role="collapsible" data-theme="b" data-content-theme="d" data-inset="false">
+<h3>CAROLINA MONTECINO<br>
+</p>
+</h3>
+<script>
+  //PARAMETROS JSCRIPT DE LA ENTIDAD
+  formulario = "informe_punto_ventaForm";
+</script>
+
+<DIV id='TITULOevaluacion_mercaderistaevaluacion_mercaderista'>
+</div>
+<ul data-role="listview" data-inset="true">
+<input type='HIDDEN' name='id_mercaderista0' value='62'>
+<input type='HIDDEN' name='id_sucursal0' value=''>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="cumple_horario0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>¿Cumple los horarios?:</label>
+<SELECT name="cumple_horario0"  id="cumple_horario0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="uniforme0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>¿Usa el uniforme?:</label>
+<SELECT name="uniforme0"  id="uniforme0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="material_limpieza0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>¿Usa el material de limpieza?:</label>
+<SELECT name="material_limpieza0"  id="material_limpieza0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="material_trabajo0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>¿Usa el material de trabajo? :</label>
+<SELECT name="material_trabajo0"  id="material_trabajo0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="fifo0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>FIFO (elegir 4 productos):</label>
+<div>
+<ul data-role="listview" data-filter="false" data-filter-placeholder="" data-filter-reveal="" data-inset="true" data-split-icon="grid" data-split-theme="z">
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">BIGTIME CHECK OUT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a><a id="fifo00" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo00");>
+</a>
+<input id="SioNofifo00" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo00" name="Idfifo0" type="hidden" value="39"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">CHIC MITI MI DP 672 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo01" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo01");>
+</a>
+<input id="SioNofifo01" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo01" name="Idfifo0" type="hidden" value="38"/>
+</li>
+<li data-icon="false"><a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">BIGTIME SEVEN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo02" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo02");>
+</a>
+<input id="SioNofifo02" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo02" name="Idfifo0" type="hidden" value="33"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">MAST. FRUT ARCOR 800 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo03" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo03");>
+</a>
+<input id="SioNofifo03" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo03" name="Idfifo0" type="hidden" value="25"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">CALIFRUT 400G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo04" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo04");>
+</a>
+<input id="SioNofifo04" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo04" name="Idfifo0" type="hidden" value="26"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">ALKA MENTOL 450G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo05" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo05");>
+</a>
+<input id="SioNofifo05" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo05" name="Idfifo0" type="hidden" value="27"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">TURRON MANI DEU 45G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo06" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo06");>
+</a>
+<input id="SioNofifo06" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo06" name="Idfifo0" type="hidden" value="24"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">MARSH MORF 250G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo07" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo07");>
+</a>
+<input id="SioNofifo07" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo07" name="Idfifo0" type="hidden" value="29"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">SAPITO BOLSA  30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo08" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo08");>
+</a>
+<input id="SioNofifo08" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo08" name="Idfifo0" type="hidden" value="30"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GOLPE TRAD.LARGO 36G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo09" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo09");>
+</a>
+<input id="SioNofifo09" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo09" name="Idfifo0" type="hidden" value="28"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">Bon o bon Mayorista &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo010" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo010");>
+</a>
+<input id="SioNofifo010" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo010" name="Idfifo0" type="hidden" value="32"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">HOBBY TRAD 40G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo011" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo011");>
+</a>
+<input id="SioNofifo011" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo011" name="Idfifo0" type="hidden" value="34"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">NIKOLO CHOC.32G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo012" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo012");>
+</a>
+<input id="SioNofifo012" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo012" name="Idfifo0" type="hidden" value="35"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">BB.PRIV.BOL.MIX 356G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo013" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo013");>
+</a>
+<input id="SioNofifo013" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo013" name="Idfifo0" type="hidden" value="31"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALL.BON O BON 95G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo014" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo014");>
+</a>
+<input id="SioNofifo014" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo014" name="Idfifo0" type="hidden" value="36"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALLETAS MINI DUL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo015" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo015");>
+</a>
+<input id="SioNofifo015" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo015" name="Idfifo0" type="hidden" value="22"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">GALL MINI SAL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo016" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo016");>
+</a>
+<input id="SioNofifo016" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo016" name="Idfifo0" type="hidden" value="23"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALLETONES &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="fifo017" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"fifo017");>
+</a>
+<input id="SioNofifo017" name="gpsfifo0" type="hidden" value="0"/>
+<input id="IDSioNofifo017" name="Idfifo0" type="hidden" value="37"/>
+</li>
+</ul>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="flejes_promocion0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Fleje promoción:</label>
+<div>
+<ul data-role="listview" data-filter="false" data-filter-placeholder="" data-filter-reveal="" data-inset="true" data-split-icon="grid" data-split-theme="z">
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">4DP Bigtime + Encendedor &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion00" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion00");>
+</a>
+<input id="SioNoflejes_promocion00" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion00" name="Idflejes_promocion0" type="hidden" value="49"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">1DP Miti Miti + 1DP Grosso o 1DP Larguirucho = 1Cup para Bicicleta &nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion01" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion01");>
+</a>
+<input id="SioNoflejes_promocion01" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion01" name="Idflejes_promocion0" type="hidden" value="52"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">1CJ Turrón + 2UN Turrón &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion02" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion02");>
+</a>
+<input id="SioNoflejes_promocion02" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion02" name="Idflejes_promocion0" type="hidden" value="54"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">1Bol Chupete + 3UN Chupete &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion03" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion03");>
+</a>
+<input id="SioNoflejes_promocion03" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion03" name="Idflejes_promocion0" type="hidden" value="55"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">1 Bol Mas. Fruta o 1 Bol Califrut + 1UN Mogul &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion04" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion04");>
+</a>
+<input id="SioNoflejes_promocion04" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion04" name="Idflejes_promocion0" type="hidden" value="56"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">1DP Nikolo + 2UN Nikolo &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion05" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion05");>
+</a>
+<input id="SioNoflejes_promocion05" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion05" name="Idflejes_promocion0" type="hidden" value="58"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">1Bol Privilegio Mix + 2UN Privilegio Alm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion06" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion06");>
+</a>
+<input id="SioNoflejes_promocion06" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion06" name="Idflejes_promocion0" type="hidden" value="59"/>
+</li>
+<li data-icon="false"><a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">2 DP Bigtime SEVEN = 1 Pelota Fútbol &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion07" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion07");>
+</a>
+<input id="SioNoflejes_promocion07" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion07" name="Idflejes_promocion0" type="hidden" value="82"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">1 DP Miti Miti + 1 DP Grosso = 1 Bolsa Bolín Bolita &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion08" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion08");>
+</a>
+<input id="SioNoflejes_promocion08" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion08" name="Idflejes_promocion0" type="hidden" value="83"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">$5.000 en Caramelos = 1 Piñata Cumpleaños &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="flejes_promocion09" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"flejes_promocion09");>
+</a>
+<input id="SioNoflejes_promocion09" name="gpsflejes_promocion0" type="hidden" value="0"/>
+<input id="IDSioNoflejes_promocion09" name="Idflejes_promocion0" type="hidden" value="84"/>
+</li>
+</ul>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="producto_flejes0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>¿Hay productos sin flejes?:</label>
+<SELECT name="producto_flejes0"  id="producto_flejes0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="limpieza_gondola0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>¿Góndola limpia?:</label>
+<SELECT name="limpieza_gondola0"  id="limpieza_gondola0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="limpieza_producto0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>¿Productos limpios?:</label>
+<SELECT name="limpieza_producto0"  id="limpieza_producto0" >
+<OPTION VALUE='99'>
+</OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="exhibicion0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>¿Hay exhibiciones adicionales conseguidas por mercaderista?:</label>
+<SELECT name="exhibicion0"  id="exhibicion0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="quiebre0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Quiebres (best seller):</label>
+<div>
+<ul data-role="listview" data-filter="false" data-filter-placeholder="" data-filter-reveal="" data-inset="true" data-split-icon="grid" data-split-theme="z">
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">BIGTIME CHECK OUT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre00" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre00");></a><input id="SioNoquiebre00" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre00" name="Idquiebre0" type="hidden" value="39"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">CHIC MITI MI DP 672 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre01" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre01");>
+</a>
+<input id="SioNoquiebre01" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre01" name="Idquiebre0" type="hidden" value="38"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">BIGTIME SEVEN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre02" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre02");>
+</a>
+<input id="SioNoquiebre02" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre02" name="Idquiebre0" type="hidden" value="33"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">MAST. FRUT ARCOR 800 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre03" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre03");>
+</a>
+<input id="SioNoquiebre03" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre03" name="Idquiebre0" type="hidden" value="25"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">CALIFRUT 400G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre04" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre04");>
+</a>
+<input id="SioNoquiebre04" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre04" name="Idquiebre0" type="hidden" value="26"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">ALKA MENTOL 450G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre05" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre05");>
+</a>
+<input id="SioNoquiebre05" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre05" name="Idquiebre0" type="hidden" value="27"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">TURRON MANI DEU 45G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre06" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre06");>
+</a>
+<input id="SioNoquiebre06" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre06" name="Idquiebre0" type="hidden" value="24"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">MARSH MORF 250G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre07" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre07");>
+</a>
+<input id="SioNoquiebre07" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre07" name="Idquiebre0" type="hidden" value="29"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">SAPITO BOLSA  30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre08" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre08");>
+</a>
+<input id="SioNoquiebre08" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre08" name="Idquiebre0" type="hidden" value="30"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GOLPE TRAD.LARGO 36G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre09" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre09");>
+</a>
+<input id="SioNoquiebre09" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre09" name="Idquiebre0" type="hidden" value="28"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">Bon o bon Mayorista &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre010" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre010");>
+</a>
+<input id="SioNoquiebre010" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre010" name="Idquiebre0" type="hidden" value="32"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">HOBBY TRAD 40G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre011" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre011");>
+</a>
+<input id="SioNoquiebre011" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre011" name="Idquiebre0" type="hidden" value="34"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">NIKOLO CHOC.32G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre012" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre012");>
+</a>
+<input id="SioNoquiebre012" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre012" name="Idquiebre0" type="hidden" value="35"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">BB.PRIV.BOL.MIX 356G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre013" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre013");>
+</a>
+<input id="SioNoquiebre013" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre013" name="Idquiebre0" type="hidden" value="31"/>
+</li>
+<li data-icon="false"><a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALL.BON O BON 95G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre014" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre014");>
+</a>
+<input id="SioNoquiebre014" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre014" name="Idquiebre0" type="hidden" value="36"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">GALLETAS MINI DUL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre015" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre015");>
+</a>
+<input id="SioNoquiebre015" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre015" name="Idquiebre0" type="hidden" value="22"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALL MINI SAL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre016" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre016");>
+</a>
+<input id="SioNoquiebre016" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre016" name="Idquiebre0" type="hidden" value="23"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALLETONES &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre017" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre017");>
+</a>
+<input id="SioNoquiebre017" name="gpsquiebre0" type="hidden" value="0"/>
+<input id="IDSioNoquiebre017" name="Idquiebre0" type="hidden" value="37"/>
+</li>
+</ul>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="comentario0">Comentarios:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="comentario0" id="comentario0"  class=new_input COLS=30>
+</textarea>
+</li>
+</ul>
+</div>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="objetivo">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Objetivo específico:</label>
+<SELECT name="objetivo"  id="objetivo" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="1">Informado</OPTION>
+<OPTION VALUE="4">No informado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<textarea style="height: 65px; ; font-size: 13px;" name="valor_objetivo" id="valor_objetivo" readonly="true" class=new_input COLS=40>
+</textarea>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="meta">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Meta sell in (en miles):</label>
+<SELECT name="meta"  id="meta" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="3">Informado firmado</OPTION>
+<OPTION VALUE="4">Informado no firmado</OPTION>
+<OPTION VALUE="2">No informado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<textarea style="height: 65px; ; font-size: 13px;" name="valor_meta" id="valor_meta" readonly="true" class=new_input COLS=26>
+</textarea>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="incentivos_activos">Incentivos activos:</label>
+<br>
+<br>NO TIENE</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="incentivos_futuros">Incentivos futuros:</label>
+<br>
+<br>NO TIENE</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="ajuste">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Ajuste:</label>
+<SELECT name="ajuste"  id="ajuste" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="1">Realizado</OPTION>
+<OPTION VALUE="0">No realizado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="sugerido">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Sugerido:</label>
+<SELECT name="sugerido"  id="sugerido" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="1">Realizado</OPTION>
+<OPTION VALUE="2">No realizado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="planograma">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Planograma:</label>
+<SELECT name="planograma"  id="planograma" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="1">Implementado</OPTION>
+<OPTION VALUE="2">No implementado</OPTION>
+</SELECT>
+<div>
+<a href="#popupLogin" data-role="button" data-position-to="window" data-transition="pop" data-rel="popup" data-theme="a" data-inline="true" onclick=datos_archivo("informe_punto_ventaForm","PLANOGRAMA");>Tomar Foto</a>
+<label id="lbl.PLANOGRAMA">0/2</label>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="vencimiento">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Vencimiento productos:</label>
+<SELECT name="vencimiento"  id="vencimiento" >
+<OPTION VALUE='99'>
+</OPTION><OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="productos_vencidos">¿Cuáles?:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="productos_vencidos" id="productos_vencidos"  class=new_input COLS=26>
+</textarea>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="quiebre_bestseller">Quiebres (best seller):</label>
+<div>
+<ul data-role="listview" data-filter="false" data-filter-placeholder="" data-filter-reveal="" data-inset="true" data-split-icon="grid" data-split-theme="z">
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">BIGTIME CHECK OUT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller0" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller0");>
+</a>
+<input id="SioNoquiebre_bestseller0" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller0" name="Idquiebre_bestseller" type="hidden" value="39"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external"><h2>
+</h2>
+<p style="white-space:normal;">CHIC MITI MI DP 672 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller1" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller1");>
+</a>
+<input id="SioNoquiebre_bestseller1" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller1" name="Idquiebre_bestseller" type="hidden" value="38"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">BIGTIME SEVEN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller2" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller2");>
+</a>
+<input id="SioNoquiebre_bestseller2" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller2" name="Idquiebre_bestseller" type="hidden" value="33"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">MAST. FRUT ARCOR 800 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller3" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller3");>
+</a>
+<input id="SioNoquiebre_bestseller3" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller3" name="Idquiebre_bestseller" type="hidden" value="25"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">CALIFRUT 400G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller4" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller4");>
+</a>
+<input id="SioNoquiebre_bestseller4" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller4" name="Idquiebre_bestseller" type="hidden" value="26"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">ALKA MENTOL 450G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller5" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller5");>
+</a>
+<input id="SioNoquiebre_bestseller5" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller5" name="Idquiebre_bestseller" type="hidden" value="27"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+</h2>
+<p style="white-space:normal;">TURRON MANI DEU 45G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller6" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller6");>
+</a>
+<input id="SioNoquiebre_bestseller6" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller6" name="Idquiebre_bestseller" type="hidden" value="24"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">MARSH MORF 250G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller7" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller7");>
+</a>
+<input id="SioNoquiebre_bestseller7" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller7" name="Idquiebre_bestseller" type="hidden" value="29"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">SAPITO BOLSA  30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller8" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller8");>
+</a>
+<input id="SioNoquiebre_bestseller8" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller8" name="Idquiebre_bestseller" type="hidden" value="30"/>
+</li>
+<li data-icon="false"><a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GOLPE TRAD.LARGO 36G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller9" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller9");>
+</a>
+<input id="SioNoquiebre_bestseller9" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller9" name="Idquiebre_bestseller" type="hidden" value="28"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">Bon o bon Mayorista &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller10" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller10");>
+</a>
+<input id="SioNoquiebre_bestseller10" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller10" name="Idquiebre_bestseller" type="hidden" value="32"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">HOBBY TRAD 40G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller11" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller11");>
+</a>
+<input id="SioNoquiebre_bestseller11" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller11" name="Idquiebre_bestseller" type="hidden" value="34"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">NIKOLO CHOC.32G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller12" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller12");>
+</a>
+<input id="SioNoquiebre_bestseller12" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller12" name="Idquiebre_bestseller" type="hidden" value="35"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">BB.PRIV.BOL.MIX 356G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller13" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller13");>
+</a>
+<input id="SioNoquiebre_bestseller13" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller13" name="Idquiebre_bestseller" type="hidden" value="31"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALL.BON O BON 95G &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller14" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller14");>
+</a>
+<input id="SioNoquiebre_bestseller14" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller14" name="Idquiebre_bestseller" type="hidden" value="36"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALLETAS MINI DUL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller15" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller15");>
+</a>
+<input id="SioNoquiebre_bestseller15" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller15" name="Idquiebre_bestseller" type="hidden" value="22"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALL MINI SAL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller16" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller16");>
+</a>
+<input id="SioNoquiebre_bestseller16" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller16" name="Idquiebre_bestseller" type="hidden" value="23"/>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2></h2>
+<p style="white-space:normal;">GALLETONES &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+<a id="quiebre_bestseller17" style="background-image:url(CheckSi.png); background-color:#F0ECE6; background-repeat:no-repeat;" onclick=verde_o_rojo(this,"quiebre_bestseller17");>
+</a>
+<input id="SioNoquiebre_bestseller17" name="gpsquiebre_bestseller" type="hidden" value="0"/>
+<input id="IDSioNoquiebre_bestseller17" name="Idquiebre_bestseller" type="hidden" value="37"/>
+</li>
+</ul>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="promociones_activas">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Promociones activas:</label>
+<div data-role="collapsible-set" data-content-theme="d" id="promociones_activas"> 
+<div data-role="collapsible" data-theme="b" data-content-theme="d" data-inset="false">
+<h3>
+<br>
+<p style="white-space:normal;">
+<b>4DP Bigtime + Encendedor &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+</p>
+<br>
+<p>Chicles</p>
+</h3>
+<script>
+  //PARAMETROS JSCRIPT DE LA ENTIDAD
+  formulario = "informe_punto_ventaForm";
+</script>
+
+<DIV id='TITULOpromocion_activa_maypromocion_activa_may'>
+</div>
+<ul data-role="listview" data-inset="true">
+<input type='HIDDEN' name='id_accion_activa0' value='84'>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_estado_promocion0">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Estado:</label>
+<SELECT name="id_estado_promocion0"  id="id_estado_promocion0" ONCHANGE=cargar_selectbox_asociado('id_estado_promocion0','informe_punto_ventaForm')>
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="4">Implementada con exhibición</OPTION>
+<OPTION VALUE="1">Implementada sin exhibición</OPTION>
+<OPTION VALUE="2">No implementada</OPTION>
+<OPTION VALUE="3">Se acabó stock</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_detalle_promocion0">Detalle (solo no implementada):</label>
+<SELECT name="id_detalle_promocion0"  id="id_detalle_promocion0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="3">Cliente no informado</OPTION>
+<OPTION VALUE="9">Cliente no quiere</OPTION>
+<OPTION VALUE="7">No han llegado elementos</OPTION>
+<OPTION VALUE="6">No hay elementos</OPTION>
+<OPTION VALUE="8">Quiebre productos madre</OPTION>
+<OPTION VALUE="5">SB fue vendido</OPTION>
+<OPTION VALUE="4">SB no ha llegado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="stock_promocion0">Stock:</label>
+<input placeholder="" type="number" name="stock_promocion0" id="stock_promocion0" onBlur=validar_datos('informe_punto_ventaForm','stock_promocion0','NUMERO_ENTERO','','')  value="" data-clear-btn="true">
+</li>
+<li data-role="fieldcontain"><label style="font-weight: normal;" for="carteleria_promociones0">¿Cartelería instalada?:</label>
+<SELECT name="carteleria_promociones0"  id="carteleria_promociones0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="exhibicion_adicional0">¿Tiene exhibición adicional?:</label>
+<SELECT name="exhibicion_adicional0"  id="exhibicion_adicional0" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="observaciones_promocion0">Observaciones:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="observaciones_promocion0" id="observaciones_promocion0"  class=new_input COLS=30>
+</textarea>
+</li>
+</ul>
+</div>
+<div data-role="collapsible" data-theme="b" data-content-theme="d" data-inset="false">
+<h3>
+<br>
+<p style="white-space:normal;">
+<b>1DP Miti Miti + 1DP Grosso o 1DP Larguirucho = 1Cup para Bicicleta &nbsp;&nbsp;&nbsp;&nbsp;</b>
+</p>
+<br>
+<p>Chicles</p>
+</h3>
+<script>
+  //PARAMETROS JSCRIPT DE LA ENTIDAD
+  formulario = "informe_punto_ventaForm";
+</script>
+
+<DIV id='TITULOpromocion_activa_maypromocion_activa_may'>
+</div>
+<ul data-role="listview" data-inset="true">
+<input type='HIDDEN' name='id_accion_activa1' value='87'>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_estado_promocion1">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Estado:</label>
+<SELECT name="id_estado_promocion1"  id="id_estado_promocion1" ONCHANGE=cargar_selectbox_asociado('id_estado_promocion1','informe_punto_ventaForm')>
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="4">Implementada con exhibición</OPTION>
+<OPTION VALUE="1">Implementada sin exhibición</OPTION>
+<OPTION VALUE="2">No implementada</OPTION>
+<OPTION VALUE="3">Se acabó stock</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_detalle_promocion1">Detalle (solo no implementada):</label>
+<SELECT name="id_detalle_promocion1"  id="id_detalle_promocion1" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="3">Cliente no informado</OPTION>
+<OPTION VALUE="9">Cliente no quiere</OPTION>
+<OPTION VALUE="7">No han llegado elementos</OPTION>
+<OPTION VALUE="6">No hay elementos</OPTION>
+<OPTION VALUE="8">Quiebre productos madre</OPTION>
+<OPTION VALUE="5">SB fue vendido</OPTION>
+<OPTION VALUE="4">SB no ha llegado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="stock_promocion1">Stock:</label>
+<input placeholder="" type="number" name="stock_promocion1" id="stock_promocion1" onBlur=validar_datos('informe_punto_ventaForm','stock_promocion1','NUMERO_ENTERO','','')  value="" data-clear-btn="true">
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="carteleria_promociones1">¿Cartelería instalada?:</label>
+<SELECT name="carteleria_promociones1"  id="carteleria_promociones1" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="exhibicion_adicional1">¿Tiene exhibición adicional?:</label>
+<SELECT name="exhibicion_adicional1"  id="exhibicion_adicional1" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="observaciones_promocion1">Observaciones:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="observaciones_promocion1" id="observaciones_promocion1"  class=new_input COLS=30>
+</textarea>
+</li>
+</ul>
+</div> 
+<div data-role="collapsible" data-theme="b" data-content-theme="d" data-inset="false">
+<h3>
+<br>
+<p style="white-space:normal;">
+<b>1CJ Turrón + 2UN Turrón &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+</p>
+<br>
+<p>Caramelos</p>
+</h3>
+<script>
+  //PARAMETROS JSCRIPT DE LA ENTIDAD
+  formulario = "informe_punto_ventaForm";
+</script>
+
+<DIV id='TITULOpromocion_activa_maypromocion_activa_may'>
+</div>
+<ul data-role="listview" data-inset="true">
+<input type='HIDDEN' name='id_accion_activa2' value='89'>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_estado_promocion2">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Estado:</label>
+<SELECT name="id_estado_promocion2"  id="id_estado_promocion2" ONCHANGE=cargar_selectbox_asociado('id_estado_promocion2','informe_punto_ventaForm')>
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="4">Implementada con exhibición</OPTION>
+<OPTION VALUE="1">Implementada sin exhibición</OPTION>
+<OPTION VALUE="2">No implementada</OPTION>
+<OPTION VALUE="3">Se acabó stock</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_detalle_promocion2">Detalle (solo no implementada):</label>
+<SELECT name="id_detalle_promocion2"  id="id_detalle_promocion2" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="3">Cliente no informado</OPTION>
+<OPTION VALUE="9">Cliente no quiere</OPTION>
+<OPTION VALUE="7">No han llegado elementos</OPTION>
+<OPTION VALUE="6">No hay elementos</OPTION>
+<OPTION VALUE="8">Quiebre productos madre</OPTION>
+<OPTION VALUE="5">SB fue vendido</OPTION>
+<OPTION VALUE="4">SB no ha llegado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="stock_promocion2">Stock:</label>
+<input placeholder="" type="number" name="stock_promocion2" id="stock_promocion2" onBlur=validar_datos('informe_punto_ventaForm','stock_promocion2','NUMERO_ENTERO','','')  value="" data-clear-btn="true">
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="carteleria_promociones2">¿Cartelería instalada?:</label>
+<SELECT name="carteleria_promociones2"  id="carteleria_promociones2" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="exhibicion_adicional2">¿Tiene exhibición adicional?:</label>
+<SELECT name="exhibicion_adicional2"  id="exhibicion_adicional2" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="observaciones_promocion2">Observaciones:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="observaciones_promocion2" id="observaciones_promocion2"  class=new_input COLS=30>
+</textarea>
+</li>
+</ul>
+</div> 
+<div data-role="collapsible" data-theme="b" data-content-theme="d" data-inset="false">
+<h3>
+<br>
+<p style="white-space:normal;">
+<b>1Bol Chupete + 3UN Chupete &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+</p>
+<br>
+<p>Caramelos</p>
+</h3>
+<script>
+  //PARAMETROS JSCRIPT DE LA ENTIDAD
+  formulario = "informe_punto_ventaForm";
+</script>
+
+<DIV id='TITULOpromocion_activa_maypromocion_activa_may'>
+</div>
+<ul data-role="listview" data-inset="true">
+<input type='HIDDEN' name='id_accion_activa3' value='90'>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_estado_promocion3">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Estado:</label>
+<SELECT name="id_estado_promocion3"  id="id_estado_promocion3" ONCHANGE=cargar_selectbox_asociado('id_estado_promocion3','informe_punto_ventaForm')>
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="4">Implementada con exhibición</OPTION>
+<OPTION VALUE="1">Implementada sin exhibición</OPTION>
+<OPTION VALUE="2">No implementada</OPTION>
+<OPTION VALUE="3">Se acabó stock</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_detalle_promocion3">Detalle (solo no implementada):</label>
+<SELECT name="id_detalle_promocion3"  id="id_detalle_promocion3" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="3">Cliente no informado</OPTION>
+<OPTION VALUE="9">Cliente no quiere</OPTION>
+<OPTION VALUE="7">No han llegado elementos</OPTION>
+<OPTION VALUE="6">No hay elementos</OPTION>
+<OPTION VALUE="8">Quiebre productos madre</OPTION>
+<OPTION VALUE="5">SB fue vendido</OPTION>
+<OPTION VALUE="4">SB no ha llegado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="stock_promocion3">Stock:</label>
+<input placeholder="" type="number" name="stock_promocion3" id="stock_promocion3" onBlur=validar_datos('informe_punto_ventaForm','stock_promocion3','NUMERO_ENTERO','','')  value="" data-clear-btn="true">
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="carteleria_promociones3">¿Cartelería instalada?:</label>
+<SELECT name="carteleria_promociones3"  id="carteleria_promociones3" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="exhibicion_adicional3">¿Tiene exhibición adicional?:</label>
+<SELECT name="exhibicion_adicional3"  id="exhibicion_adicional3" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="observaciones_promocion3">Observaciones:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="observaciones_promocion3" id="observaciones_promocion3"  class=new_input COLS=30>
+</textarea>
+</li>
+</ul>
+</div> 
+<div data-role="collapsible" data-theme="b" data-content-theme="d" data-inset="false">
+<h3>
+<br>
+<p style="white-space:normal;">
+<b>1 Bol Mas. Fruta o 1 Bol Califrut + 1UN Mogul &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+</p>
+<br>
+<p>Caramelos</p>
+</h3>
+<script>
+  //PARAMETROS JSCRIPT DE LA ENTIDAD
+  formulario = "informe_punto_ventaForm";
+</script>
+
+<DIV id='TITULOpromocion_activa_maypromocion_activa_may'>
+</div>
+<ul data-role="listview" data-inset="true">
+<input type='HIDDEN' name='id_accion_activa4' value='91'>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_estado_promocion4">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Estado:</label>
+<SELECT name="id_estado_promocion4"  id="id_estado_promocion4" ONCHANGE=cargar_selectbox_asociado('id_estado_promocion4','informe_punto_ventaForm')>
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="4">Implementada con exhibición</OPTION>
+<OPTION VALUE="1">Implementada sin exhibición</OPTION>
+<OPTION VALUE="2">No implementada</OPTION>
+<OPTION VALUE="3">Se acabó stock</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="id_detalle_promocion4">Detalle (solo no implementada):</label>
+<SELECT name="id_detalle_promocion4"  id="id_detalle_promocion4" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="3">Cliente no informado</OPTION>
+<OPTION VALUE="9">Cliente no quiere</OPTION>
+<OPTION VALUE="7">No han llegado elementos</OPTION>
+<OPTION VALUE="6">No hay elementos</OPTION>
+<OPTION VALUE="8">Quiebre productos madre</OPTION>
+<OPTION VALUE="5">SB fue vendido</OPTION>
+<OPTION VALUE="4">SB no ha llegado</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="stock_promocion4">Stock:</label>
+<input placeholder="" type="number" name="stock_promocion4" id="stock_promocion4" onBlur=validar_datos('informe_punto_ventaForm','stock_promocion4','NUMERO_ENTERO','','')  value="" data-clear-btn="true">
+</li><li data-role="fieldcontain">
+<label style="font-weight: normal;" for="carteleria_promociones4">¿Cartelería instalada?:</label>
+<SELECT name="carteleria_promociones4"  id="carteleria_promociones4" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain"><label style="font-weight: normal;" for="exhibicion_adicional4">¿Tiene exhibición adicional?:</label>
+<SELECT name="exhibicion_adicional4"  id="exhibicion_adicional4" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="observaciones_promocion4">Observaciones:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="observaciones_promocion4" id="observaciones_promocion4"  class=new_input COLS=30>
+</textarea>
+</li>
+</ul>
+</div>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="promociones_activas_informadas">Promociones activas informadas:</label>
+<div>
+<ul data-role="listview" data-filter="false" data-filter-placeholder="" data-filter-reveal="" data-inset="true" >
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+<br>
+<p style="white-space:normal;">
+<b>1DP Nikolo + 2UN Nikolo</b>
+</p>
+</h2>
+<p>Chocolates</p>
+</a>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+<br>
+<p style="white-space:normal;">
+<b>1Bol Privilegio Mix + 2UN Privilegio Alm</b>
+</p>
+</h2>
+<p>Chocolates</p>
+</a>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+<br>
+<p style="white-space:normal;">
+<b>2 DP Bigtime SEVEN = 1 Pelota Fútbol</b>
+</p>
+</h2>
+<p>Chicles</p>
+</a>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+<br>
+<p style="white-space:normal;">
+<b>1 DP Miti Miti + 1 DP Grosso = 1 Bolsa Bolín Bolita</b>
+</p>
+</h2>
+<p>Chicles</p>
+</a>
+</li>
+<li data-icon="false">
+<a href="#" rel="external">
+<h2>
+<br>
+<p style="white-space:normal;">
+<b>$5.000 en Caramelos = 1 Piñata Cumpleaños</b>
+</p>
+</h2>
+<p>Alimentos</p>
+</a>
+</li>
+</ul>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="promociones_futuras">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Promociones futuras:</label>
+<br>
+<br>NO TIENE</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="promocion_competencia">Promoción competencia:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="promocion_competencia" id="promocion_competencia"  class=new_input COLS=25>
+</textarea>
+<div>
+<a href="#popupLogin" data-role="button" data-position-to="window" data-transition="pop" data-rel="popup" data-theme="a" data-inline="true" onclick=datos_archivo("informe_punto_ventaForm","PROMOCION_COMPETENCIA");>Tomar Foto</a>
+<label id="lbl.PROMOCION_COMPETENCIA">0/2</label>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="accion_competencia">Acción competencia:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="accion_competencia" id="accion_competencia"  class=new_input COLS=25>
+</textarea>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="exhibiciones_adicionales">¿Hay exhibiciones adicionales?:</label>
+<SELECT name="exhibiciones_adicionales"  id="exhibiciones_adicionales" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="3">Ambas</OPTION>
+<OPTION VALUE="2">Si, obtenidas por central</OPTION>
+<OPTION VALUE="1">Si, obtenidas por mercaderista</OPTION>
+<OPTION VALUE="4">No</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="exhibiciones">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Cantidad exhibiciones:</label>
+<SELECT name="exhibiciones"  id="exhibiciones" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">0</OPTION>
+<OPTION VALUE="9">9</OPTION>
+<OPTION VALUE="1">1</OPTION>
+<OPTION VALUE="2">2</OPTION>
+<OPTION VALUE="3">3</OPTION>
+<OPTION VALUE="4">4</OPTION>
+<OPTION VALUE="5">5</OPTION>
+<OPTION VALUE="6">6</OPTION>
+<OPTION VALUE="7">7</OPTION>
+<OPTION VALUE="8">8</OPTION>
+</SELECT>
+<div>
+<a href="#popupLogin" data-role="button" data-position-to="window" data-transition="pop" data-rel="popup" data-theme="a" data-inline="true" onclick=datos_archivo("informe_punto_ventaForm","EXHIBICIONES");>Tomar Foto</a>
+<label id="lbl.EXHIBICIONES">0/2</label>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="nombre_exhibicion">¿Cuáles son las exhibiciones?:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="nombre_exhibicion" id="nombre_exhibicion"  class=new_input COLS=26>
+</textarea>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="promotora">
+<img src='../plugins/imagenes/plataforma/arr_red_1.gif' border='0' style='vertical-align: middle;'>Promotora:</label>
+<SELECT name="promotora"  id="promotora" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="0">No</OPTION>
+<OPTION VALUE="1">Si</OPTION>
+</SELECT>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="cantidad_promotora">¿Cuántas promotoras hay?:</label>
+<input placeholder="" type="number" name="cantidad_promotora" id="cantidad_promotora" onBlur=validar_datos('informe_punto_ventaForm','cantidad_promotora','NUMERO_ENTERO','id_sucursal,fecha','')  value="" data-clear-btn="true">
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="nombre_promotora">Nombre(s) de la(s) promotora(s):</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="nombre_promotora" id="nombre_promotora"  class=new_input COLS=25></textarea>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="oportunidades_venta">Oportunidades de venta:</label>
+<SELECT name="oportunidades_venta"  id="oportunidades_venta" >
+<OPTION VALUE='99'></OPTION>
+<OPTION VALUE="8">Exhibición adicional chicles-Bigtime</OPTION>
+<OPTION VALUE="9">Bloque DEU en el lineal</OPTION>
+</SELECT>
+<div>
+<a href="#popupLogin" data-role="button" data-position-to="window" data-transition="pop" data-rel="popup" data-theme="a" data-inline="true" onclick=datos_archivo("informe_punto_ventaForm","OPORTUNIDADES_VENTA");>Tomar Foto</a>
+<label id="lbl.OPORTUNIDADES_VENTA">0/2</label>
+</div>
+</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="tareas_pendientes">Tareas pendientes mercaderista:</label>
+<br>
+<br>NO TIENE</li>
+<li data-role="fieldcontain">
+<label style="font-weight: normal;" for="tarea_actual">Tarea actual mercaderista:</label>
+<textarea style="height: 65px; ; font-size: 13px;" name="tarea_actual" id="tarea_actual"  class=new_input COLS=25>
+</textarea>
+</li>
+<fieldset class="ui-grid-a">
+<div class="ui-block-b">
+<button id="boton_guardar" type="submit" data-theme="a" onClick="guardar_ficha('NO_ENVIAR','informe_punto_ventaForm','1');return false;" rel="external">Guardar</button>
+</div>
+</fieldset>
+</ul>
+
+
+
+
+
+</form>
+</DIV>
+<div id="popupMenu" data-role="popup" data-theme="a">
+<div id="popupFotoLocal" class="ui-corner-all" data-dismissible="false" data-role="popup" data-theme="a">
+<form method="post" action="BusinessLogic/action_uploadLocal.php" enctype="multipart/form-data" name="iupload2" id="iupload2" >
+<div style="padding: 10px 20px;">
+<h3>Tomar Foto</h3>
+<input type="hidden" name="hddfotolocal" id="hddfotolocal" value="49">
+<iframe height="0" width="285px" id="my_iframe2" name="my_iframe2" src="">
+</iframe>
+<div id="loading2" style="position: relative; left: 110px; top:5px; height:70px; width: 70px;">
+</div>
+<input name="uploadedfileLocal" type="file" accept="image/*" capture="camera" id="uploadedfileLocal" data-theme="a"/>
+<button name="subir_archivo2" id="subir_archivo2" data-theme="b" onClick="UpFilesLocal();return false;" rel="external">Subir foto</button>
+<button name="cancelar_archivo2" id="cancelar_archivo2" data-theme="c" onClick="CierrePopup();return false;" rel="external">Cancelar</button>
+</div>
+</form>
+</div>
+</div>
+<input type="hidden" name="hdd.FOTO_DETALLE_MUEBLE" id="hdd.FOTO_DETALLE_MUEBLE" value="0">
+<input type="hidden" name="hdd.ID_EXHIBICION_ADICIONAL" id="hdd.ID_EXHIBICION_ADICIONAL" value="0">
+<input type="hidden" name="hdd.FOTO_MUEBLE" id="hdd.FOTO_MUEBLE" value="0">
+<input type="hidden" name="hdd.CANT_PROMOTORAS" id="hdd.CANT_PROMOTORAS" value="0">
+<input type="hidden" name="hdd.CHECK_OUT2" id="hdd.CHECK_OUT2" value="0">
+<input type="hidden" name="hdd.EXHIBICIONES" id="hdd.EXHIBICIONES" value="0">
+<input type="hidden" name="hdd.OPORTUNIDADES_VENTA" id="hdd.OPORTUNIDADES_VENTA" value="0">
+<input type="hidden" name="hdd.PLANOGRAMA" id="hdd.PLANOGRAMA" value="0">
+<input type="hidden" name="hdd.PROMOCION_COMPETENCIA" id="hdd.PROMOCION_COMPETENCIA" value="0">
+<input type="hidden" name="hdd.PROMOCIONES_ACTIVAS_SPM" id="hdd.PROMOCIONES_ACTIVAS_SPM" value="0">
+<input type="hidden" name="hdd." id="hdd." value="0"><input type="hidden" name="hdd." id="hdd." value="0">
+<input type="hidden" name="hdd." id="hdd." value="0"><input type="hidden" name="hdd." id="hdd." value="0">
+<input type="hidden" name="hdd." id="hdd." value="0"><div id="popupMenu" data-role="popup" data-theme="a">
+<div id="popupLogin" class="ui-corner-all" data-dismissible="false" data-role="popup" data-theme="a">
+<form method="post" action="BusinessLogic/action_upload.php" enctype="multipart/form-data" name="iupload" id="iupload" >
+<div style="padding: 10px 20px;">
+<h3>Tomar Foto </h3>
+<iframe height="0" width="285px" id="my_iframe" name="my_iframe" src="">
+</iframe>
+<div id="loading" style="position: relative; left: 110px; top:5px; height:70px; width: 70px;">
+</div>
+<input type="hidden" name="id_archivo" value="1">
+<input type="hidden" name="id_sucursal_iupload" Id="id_sucursal_iupload" value="49">
+<input type="hidden" name="codigo_local_iupload" Id="codigo_local_iupload">
+<input type="hidden" name="fecha_iupload" Id="fecha_iupload">
+<input type="hidden" name="TipoUpload" Id="TipoUpload">
+<input type="hidden" name="FechaUpload" Id="FechaUpload">
+<input type="hidden" name="id_tipo_informe_iupload" Id="id_tipo_informe_iupload">
+<input type="hidden" name="campo_iupload" Id="campo_iupload">
+<input name="uploadedfile" type="file" accept="image/*" capture="camera" id="uploadedfile" data-theme="a"/>
+<button name="subir_archivo" id="subir_archivo" data-theme="b" onClick="UpFiles();return false;" rel="external">Subir foto</button>
+<button name="cancelar_archivo" id="cancelar_archivo" data-theme="c" onClick="closePopup();return false;" rel="external">Cancelar</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<div data-role="footer" class="footer-gradient" class="ui-navbar-custom" data-position="fixed" data-fullscreen="false">
+<div data-role="navbar" class="ui-navbar-custom">
+<ul>
+<li>
+<a  href="../aplicacion/ficha_panel.html" id="usuario" data-icon="custom" rel="external">&nbsp;</a>
+</li>
+<li>
+<a  href="../aplicacion/lista_sucursales.html" id="lista" data-icon="custom" rel="external">&nbsp;</a>
+</li>
+<li>
+<a  href="../aplicacion/mapa_sucursales.html" id="mapa" data-icon="custom" rel="external">&nbsp;</a>
+</li>
+</ul>
+</div>
+</div>
+<DIV align=>
+<form name='ventanaForm' onSubmit='' method='post' action='' target=''>
+<input type='hidden' name='nombre_forms_string' value='informe_punto_ventaForm'>
+<input type='hidden' name='blanco_al_guardar' value='N'>
+<input type='hidden' name='host' value='192.168.1.183/angular'>
+<input type='hidden' name='padre' value='mapa_sucursales'>
+<input type='hidden' name='alert_box_type' value='1'>
+<input type='hidden' name='aplicacion' id='aplicacion' value='62'>
+<input type='hidden' name='mobile' value='false'>
+<input type='hidden' name='nativa' value='1'>
+<input type='hidden' name='ventana' value='informe_punto_venta'>
+<input type='hidden' name='id_usuario' value='119'>
+<input type='hidden' name='phonegap' value='1'>
+<input type="hidden" name="var_s_perfil" id="var_s_perfil" value="8">
+<input type='hidden' name='key_id' value=''>
+<input type='hidden' name='tipo_key_id' value=''>
+<input type='hidden' name='var_distancia_maps' id='var_distancia_maps' value='2000'>
+</form>
+</DIV>
+<div id="popup" class="popup" style="z-index:150;"></div>
+<script>
+//VUELVE A CARGAR PAGINA CON VALORE INSERTADOS
+var nombre_forms_string = document.forms['ventanaForm'].elements["nombre_forms_string"].value.split("^");
+var cant_entidad = nombre_forms_string.length;
+var auxiliar = 0;
+for(i=0;i<cant_entidad;i++)
+{
+var formulario = nombre_forms_string[i];
+	if(document.forms[formulario].elements["var_tipo_estructura"].value=='3' || document.forms[formulario].elements["var_tipo_estructura"].value=='filtro')
+	{
+		auxiliar = 1;
+		var data = camposFichaVacia(formulario,'');
+		if(data==false){
+			auxiliar = 2;
+		}
+	}
+}
+
+	if(auxiliar==2){
+		buscar_ficha(formulario,"192.168.1.183/angular");
+	}
+
+/*PARA CALCULAR RESULTADOS EN APLICACION ANGULAR*/
+formulario = "resultadoForm";
+
+if(isset(document.forms[formulario])){
+  ventana = document.forms[formulario].elements["var_ventana"].value;
+
+  if(ventana=="ficha_resultado") {
+    document.forms[formulario].elements["utilidad"].value = entero_a_dinero(dinero_a_entero(document.forms[formulario].elements["venta"].value) + dinero_a_entero(document.forms[formulario].elements["inversiones"].value) - dinero_a_entero(document.forms[formulario].elements["compra"].value) - dinero_a_entero(document.forms[formulario].elements["impuestos"].value));
+    document.forms[formulario].elements["caja_banco"].value = entero_a_dinero(dinero_a_entero(document.forms[formulario].elements["utilidad"].value) + dinero_a_entero(document.forms[formulario].elements["caja_inicial"].value) + dinero_a_entero(document.forms[formulario].elements["iva_credito"].value) - dinero_a_entero(document.forms[formulario].elements["deposito"].value));
+  }
+}
+
+//PERMITE QUE SE CARGUE POR DEFECTO LA URL DEL SERVIDOR EN EL FORMULARIO DE CONFIGURACION
+ventana = document.forms["ventanaForm"].elements["ventana"].value;
+
+if(ventana=="ficha_configuracion"){
+
+  url_servidor = window.localStorage.url_servidor;
+  
+  if(url_servidor==undefined)
+    url_servidor = "";
+	
+  document.forms["configuracionForm"].elements["url"].value = "" + url_servidor;
+}
+
+</script>
+
+</div>
+</body>
+
+</html>
