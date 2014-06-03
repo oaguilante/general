@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+
+
+<head><title>Angular.cl</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"></head>
+<body bgcolor="C6C6C6" onLoad=definirCampoFoco("","","principal");cargar_datos_ficha("");>
+<div data-role="page" id="foo">
+
+
+
+
+
+<div data-role="panel" data-position-fixed="true" id="nav-panel_left" data-display="reveal" data-position="left">
+<div align="center">
+<img src="../plugins/imagenes/plataforma/logo_angular_muy_chico.png"></div>
+<div data-role="collapsible-set" data-theme="b" data-content-theme="d" data-inset="">
+<div data-role="collapsible">
+<h2>Inicio</h2><ul data-role="listview" data-divider-theme="d"><li>
+<a href="file:///android_asset/www/principal/principal.html" data-transition="none" data-direction="reverse">Panel</a>
+</li>
+</ul>
+</div>
+<div data-role="collapsible">
+<h2>Sucursales</h2>
+<ul data-role="listview" data-divider-theme="d"><li>
+<a href="file:///android_asset/www/aplicacion/lista_sucursales.html" data-transition="none" data-direction="reverse">Lista sucursales</a></li><li>
+<a href="file:///android_asset/www/aplicacion/mapa_sucursales.html" data-transition="none" data-direction="reverse">Mapa sucursales</a></li><li>
+<a href="file:///android_asset/www/aplicacion/ficha_galeria_imagenes.html" data-transition="none" data-direction="reverse">Galer&iacute;a fotos</a></li></ul></div>
+<div data-role="collapsible">
+<h2>Informes</h2>
+<ul data-role="listview" data-divider-theme="d"><li>
+<a href="file:///android_asset/www/aplicacion/informe_ejecucion_pdv.html" data-transition="none">Informe ejecuci&oacute;n PDV</a></li><li>
+<a href="file:///android_asset/www/aplicacion/informe_gestion_di.html" data-transition="none">Informe gesti&oacute;n DI</a></li></ul></div>
+<div data-role="collapsible"><h2>Gesti&oacute;n usuario</h2><ul data-role="listview" data-divider-theme="d"><li>
+<a href="file:///android_asset/www/aplicacion/ficha_panel.html" data-transition="none">Panel usuario</a></li></ul></div>
+<div data-role="collapsible"><h2>Prospectos</h2><ul data-role="listview" data-divider-theme="d"><li>
+<a href="file:///android_asset/www/aplicacion/ficha_prospecto.html" data-transition="none">Ingresar prospecto</a></li></ul></div>
+<div data-role="collapsible"><h2>Usuarios</h2><ul data-role="listview" data-divider-theme="d"><li>
+<a href="file:///android_asset/www/aplicacion/ficha_cambio_clave.html" data-transition="none">Cambiar contrase&ntilde;a</a></li></ul></div>
+<div data-role="collapsible"><h2>Ayuda</h2><ul data-role="listview" data-divider-theme="d"><li>
+<a href="file:///android_asset/www/aplicacion/soporte.html" data-transition="none">Soporte</a></li></ul></div></div>
+</div><!-- /panel izquierdo -->
+<div data-role="panel" data-position-fixed="true" id="nav-panel_right" data-display="reveal" data-position="right">
+<div align="center"><img src="../plugins/imagenes/plataforma/logo_angular_muy_chico.png"></div><div>
+<ul data-role="listview" data-inset="true" data-icon="false">
+<li data-role="list-divider">Descripción informes</li><li><a href="#"><h2>IPdV MAY</h2><p>Informe punto de venta mayorista</p><h2>IPdV SPM</h2>
+<p>Informe punto de venta supermercado</p><h2>IPdV COB</h2><p>Informe punto de venta cobertura</p><h2>Informe de Promotoras</h2>
+<p>Informe de Promotoras</p><h2>Informe de Toma de Precios</h2><p>Informe de Toma de Precios</p><h2>Informe Merchandising</h2>
+<p>Informe Merchandising</p><h2>Informe de Muebles</h2><p>Informe de Muebles</p></a></li></ul></div><div>
+<ul data-role="listview" data-inset="true" data-icon="false"><li data-role="list-divider">Sincronización</li><li>
+<div data-role="controlgroup"><a onclick=Sincronizable(); data-role="button" data-icon="refresh">Sincronizar</a>
+<a onclick=EliminarDatosLocal(); data-role="button" data-icon="delete">Borrar Todo</a></div><br><p id="var_cantidadOff"></p></li></ul></div><div><ul data-role="listview" data-inset="true" data-icon="false"><li data-role="list-divider">Configuración</li><li><div data-role="controlgroup"><a href="../aplicacion/window.php?ventana=ficha_configuracion"; data-role="button" data-icon="grid" rel="external">Parámetros</a></div></li></ul></div></div> <!-- /panel derecho --><div data-role="header" data-position="fixed" class="header-gradient"><div align="center"><h1>Panel</h1></div><div class="ui-btn-left" data-role="controlgroup" data-type="horizontal"><a href="#nav-panel_left" class="ui-nodisc-icon" data-role="button" id="menu" data-icon="filing-cabinet" data-iconpos="notext" ></a><a href="#" class="ui-nodisc-icon" onclick="volver(document);" data-role="button" id="menu" data-icon="reply" data-iconpos="notext"></a></div><div class="ui-btn-right" data-role="controlgroup" data-type="horizontal"><a href="../autentificacion/logout.html" class="ui-nodisc-icon" data-transition="none" data-role="button" id="menu_rojo" data-icon="plus-circle" data-iconpos="notext"></a><a href="#nav-panel_right" class="ui-nodisc-icon" data-role="button" id="menu" data-icon="gear" data-iconpos="notext" onclick=ConsultaSincronizar()></a></div></div><!-- /header -->
+<div data-role="content">
+
+<ul data-role="listview" data-inset="true">
+<li data-role="fieldcontain">
+<div>
+<ul data-role="listview" data-filter="false" data-filter-placeholder="" data-filter-reveal="" data-inset="true" >
+<li data-icon="custom" id="flecha_derecha">
+<a href="file:///android_asset/www/aplicacion/lista_ultimos_ipdv.html" data-transition="none">
+<h2>1. Ultimos IPDV enviados</h2>
+<p style="white-space:normal;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+</li>
+<li data-icon="custom" id="flecha_derecha">
+<a href="file:///android_asset/www/aplicacion/lista_tareas_resolver.html" data-transition="none">
+<h2>2. Tareas por resolver</h2>
+<p style="white-space:normal;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+</li>
+<li data-icon="custom" id="flecha_derecha">
+<a href="file:///android_asset/www/aplicacion/lista_tareas_solicitadas.html" data-transition="none">
+<h2>3. Tareas solicitadas</h2>
+<p style="white-space:normal;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</a>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+
+</div>
+
+<!-- /content -->
+
+<div data-role="footer" data-position="fixed" class="footer-gradient" class="ui-navbar-custom">
+<div data-role="navbar" class="ui-navbar-custom"><ul><li>
+<a  href="../aplicacion/ficha_panel.html" id="usuario" data-icon="custom" data-transition="none">&nbsp;</a></li><li>
+<a  href="../aplicacion/lista_sucursales.html" id="lista" data-icon="custom" data-transition="none">&nbsp;</a></li><li>
+<a  href="../aplicacion/mapa_sucursales.html" id="mapa" data-icon="custom" data-transition="none">&nbsp;</a></li></ul></div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>

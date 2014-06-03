@@ -1,0 +1,80 @@
+
+<!DOCTYPE html><html><script type="text/javascript" src="PageLogic/PageLogicJS.js"></script><script type="text/javascript" src="PageLogic/FLA.js"></script><script type="text/javascript" src="PageLogic/FuncionesAuxiliares.js"></script><script type="text/javascript" src="PageLogic/grid/FLA_grid.js"></script><script type="text/javascript" src="PageLogic/upload/FLA_upload.js"></script><script type="text/javascript" src="PageLogic/download/FLA_download.js"></script><script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=drawing"></script><script type="text/javascript" src="../plugins/googlemaps/markerclusterer.js"></script><script type="text/javascript" src="PageLogic/maps/FLA_maps.js"></script><script type="text/javascript" src="PageLogic/maps/FLA_maps_di.js"></script><script type="text/javascript" language="JavaScript" src="../plugins/codebase/dhtmlxcommon.js"></script><script type="text/javascript" language="JavaScript" src="../plugins/codebase/dhtmlxgantt.js"></script><script type="text/javascript" src="PageLogic/custom/FLA_custom.js"></script><script type="text/javascript" src="PageLogic/custom/FuncionesAuxiliares_custom.js"></script><script src="../plugins/jquery/jquery-1.10.2.min.js"></script><script src="../plugins/jquery/jquery.mobile-1.3.2.min.js"></script><link rel="stylesheet" type="text/css" href="../plugins/jquery/jquery.mobile-1.3.2.min.css" /><link rel=stylesheet type="text/css" href="../aplicacion/PresentationLogic/custom_jqm.css"><script>navigator.geolocation.getCurrentPosition(foundLocation, noLocation);</script><style>#foo .ui-content {position : absolute;top      : 0;right    : 0;bottom   : 0;left     : 0;padding  : 0px;}</style><head><title>Angular.cl</title><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"></head><body bgcolor="C6C6C6" onLoad=definirCampoFoco("","","mapa_sucursales");cargar_datos_ficha("");><div data-role="page" id="foo"><div data-role="panel" data-position-fixed="true" id="nav-panel_left" data-display="reveal" data-position="left"><div align="center"><img src="../plugins/imagenes/plataforma/logo_angular_muy_chico.png"></div><div data-role="collapsible-set" data-theme="b" data-content-theme="d" data-inset=""><div data-role="collapsible"><h2>Inicio</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/principal/principal.html" rel="external">Panel</a></li></ul></div><div data-role="collapsible"><h2>Sucursales</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/lista_sucursales.html" data-transition="none">Lista sucursales</a></li><li><a href="file:///android_asset/www/aplicacion/mapa_sucursales.html" data-transition="none">Mapa sucursales</a></li><li><a href="file:///android_asset/www/aplicacion/ficha_galeria_imagenes.html" data-transition="none">Galer&iacute;a fotos</a></li></ul></div><div data-role="collapsible"><h2>Informes</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/informe_ejecucion_pdv.html" data-transition="none">Informe ejecuci&oacute;n PDV</a></li><li><a href="file:///android_asset/www/aplicacion/informe_gestion_di.html" data-transition="none">Informe gesti&oacute;n DI</a></li></ul></div><div data-role="collapsible"><h2>Gesti&oacute;n usuario</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/ficha_panel.html" data-transition="none">Panel usuario</a></li></ul></div><div data-role="collapsible"><h2>Prospectos</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/ficha_prospecto.html" data-transition="none">Ingresar prospecto</a></li></ul></div><div data-role="collapsible"><h2>Usuarios</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/ficha_cambio_clave.html" data-transition="none">Cambiar contrase&ntilde;a</a></li></ul></div><div data-role="collapsible"><h2>Ayuda</h2><ul data-role="listview" data-divider-theme="d"><li><a href="file:///android_asset/www/aplicacion/soporte.html" data-transition="none">Crear requerimiento</a></li><li><a href="file:///android_asset/www/aplicacion/lista_ticket_soporte.html" data-transition="none">Ver requerimientos</a></li></ul></div></div></div><!-- /panel izquierdo --><div data-role="panel" data-position-fixed="true" id="nav-panel_right" data-display="reveal" data-position="right"><div align="center"><img src="../plugins/imagenes/plataforma/logo_angular_muy_chico.png"></div><input type="hidden" name="filtros" id="filtros" value=""><div><ul data-role="listview" data-inset="true" data-icon="false"><li data-role="list-divider">Filtro Mapa</li><li><select  id="seleccion_idcanal" ><option value="" selected>Seleccione canal</option><option value="10">Mayorista</option><option value="20">TC</option><option value="30">Supermercado</option><option value="40">Distribución</option><option value="80">Autoservicio</option><option value="90">Fruna</option><option value="0">Todos</option></select><input type="button" name="btn_filtrar" id="btn_filtrar" data-theme="b" value="Filtrar" onclick=FiltroMapa("id_canal");></li></li></ul></div></div> <!-- /panel derecho --><div data-role="header" data-position="fixed" class="header-gradient" data-tap-toggle="false" data-hide-during-focus=""><div align="center"><h1>Mapa PdV</h1></div><div class="ui-btn-left" data-role="controlgroup" data-type="horizontal"><a href="#nav-panel_left" class="ui-nodisc-icon" data-role="button" id="menu" data-icon="filing-cabinet" data-iconpos="notext" ></a><a href="#" class="ui-nodisc-icon" onclick="volver(document);" data-role="button" id="menu" data-icon="reply" data-iconpos="notext"></a></div><div class="ui-btn-right" data-role="controlgroup" data-type="horizontal"><a href="../autentificacion/logout.html" class="ui-nodisc-icon" data-transition="none" data-role="button" id="menu_rojo" data-icon="plus-circle" data-iconpos="notext"></a><a href="#nav-panel_right" class="ui-nodisc-icon" data-role="button" id="menu" data-icon="gear" data-iconpos="notext" onclick=ConsultaSincronizar()></a></div></div><!-- /header -->
+  <style> 
+
+  .flotante1 {
+    display:scroll;position:fixed;bottom:320px;right:0px;
+  }
+
+  .flotante2 {
+    display:scroll;position:fixed;bottom:495px;right:0px;
+  }
+
+  .flotante3 {
+    display:scroll;position:fixed;bottom:450px;right:0px;
+  }
+
+  </style>
+
+
+ <script>
+
+
+  navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
+
+
+</script>
+
+<div data-role="content"><div id="map_canvas" style="width:100%; height:100%; margin-left:auto; margin-right:auto;position:absolute;top:0;right:0;bottom:0;left:0;padding:0px;"></div><FORM name="mapa"><input type="hidden" name="lat"><input type="hidden" name="long"></FORM></div><div data-role="footer" data-position="fixed" class="footer-gradient" data-tap-toggle="false" data-hide-during-focus="" class="ui-navbar-custom"><div data-role="navbar" class="ui-navbar-custom"><ul><li><a  href="../aplicacion/ficha_panel.html" id="usuario" data-icon="custom" data-transition="none">&nbsp;</a></li><li><a  href="../aplicacion/lista_sucursales.html" id="lista" data-icon="custom" data-transition="none">&nbsp;</a></li><li><a class="ui-btn-active" href="../aplicacion/mapa_sucursales.html" id="mapa" data-icon="custom" data-transition="none">&nbsp;</a></li></ul></div></div><div align=''><form name='ventanaForm' onSubmit='' method='post' action='' target=''><input type='hidden' name='nombre_forms_string' value=''><input type='hidden' name='blanco_al_guardar' value=''><input type='hidden' name='host' value='192.168.1.183/angular'><input type='hidden' name='padre' value=''><input type='hidden' name='alert_box_type' value='1'><input type='hidden' name='aplicacion' id='aplicacion' value='62'><input type='hidden' name='mobile' value='false'><input type='hidden' name='nativa' value='1'><input type='hidden' name='ventana' value='mapa_sucursales'><input type='hidden' name='id_usuario' value='160'><input type='hidden' name='phonegap' value='1'><input type="hidden" name="var_s_perfil" id="var_s_perfil" value="8"><input type="hidden" name="transition" value="none"><input type='hidden' name='key_id' value=''><input type='hidden' name='tipo_key_id' value='ID_USUARIO'><input type='hidden' name='var_distancia_maps' id='var_distancia_maps' value='2000'></form></div><!-- /form --><div id="popup" class="popup" style="z-index:150;"></div></div>
+<script>
+//VUELVE A CARGAR PAGINA CON VALORES INSERTADOS
+var nombre_forms_string = document.forms['ventanaForm'].elements["nombre_forms_string"].value.split("^");
+var cant_entidad = nombre_forms_string.length;
+var auxiliar = 0;
+for(i=0;i<cant_entidad;i++)
+{
+var formulario = nombre_forms_string[i];
+	if(document.forms[formulario].elements["var_tipo_estructura"].value=='3' || document.forms[formulario].elements["var_tipo_estructura"].value=='filtro')
+	{
+		auxiliar = 1;
+		var data = camposFichaVacia(formulario,'');
+		if(data==false){
+			auxiliar = 2;
+		}
+	}
+}
+
+	if(auxiliar==2){
+		buscar_ficha(formulario,"192.168.1.183/angular");
+	}
+
+/*PARA CALCULAR RESULTADOS EN APLICACION ANGULAR*/
+formulario = "resultadoForm";
+
+if(isset(document.forms[formulario])){
+  ventana = document.forms[formulario].elements["var_ventana"].value;
+
+  if(ventana=="ficha_resultado") {
+    document.forms[formulario].elements["utilidad"].value = entero_a_dinero(dinero_a_entero(document.forms[formulario].elements["venta"].value) + dinero_a_entero(document.forms[formulario].elements["inversiones"].value) - dinero_a_entero(document.forms[formulario].elements["compra"].value) - dinero_a_entero(document.forms[formulario].elements["impuestos"].value));
+    document.forms[formulario].elements["caja_banco"].value = entero_a_dinero(dinero_a_entero(document.forms[formulario].elements["utilidad"].value) + dinero_a_entero(document.forms[formulario].elements["caja_inicial"].value) + dinero_a_entero(document.forms[formulario].elements["iva_credito"].value) - dinero_a_entero(document.forms[formulario].elements["deposito"].value));
+  }
+}
+
+//PERMITE QUE SE CARGUE POR DEFECTO LA URL DEL SERVIDOR EN EL FORMULARIO DE CONFIGURACION
+ventana = document.forms["ventanaForm"].elements["ventana"].value;
+
+if(ventana=="ficha_configuracion"){
+
+  url_servidor = window.localStorage.url_servidor;
+  
+  if(url_servidor==undefined)
+    url_servidor = "";
+	
+  document.forms["configuracionForm"].elements["url"].value = "" + url_servidor;
+}
+
+</script>
+
+</body>
+
+</html>

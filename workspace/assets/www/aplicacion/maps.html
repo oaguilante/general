@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+html, body, #map_canvas {
+margin: 0;
+padding: 0;
+height: 100%;
+}
+</style> 
+    <title>Device Properties Example</title>
+
+    <script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    
+   
+    
+    <script type="text/javascript" charset="utf-8">
+
+  var map;
+var marcador;
+
+function initialize() {
+var latlng = new google.maps.LatLng(-34.397, 150.644);
+var myOptions = {
+zoom: 8,
+center: latlng,
+mapTypeId: google.maps.MapTypeId.ROADMAP,
+zoomControl: true
+};
+map = new google.maps.Map(document.getElementById("map_canvas"),
+myOptions);
+
+
+marcador = new google.maps.Marker( {
+position: latlng,
+map:map	
+})
+}
+
+function mostrarUbicacion(){
+navigator.geolocation.getCurrentPosition( lecturaGPS , errorGPS , {enableHighAccuracy:true} ) ; 
+}
+
+function lecturaGPS(ubicacion){
+
+var miubicacion = new google.maps.LatLng(ubicacion.coords.latitude, ubicacion.coords.longitude);
+
+map.setCenter(miubicacion);
+marcador.setPosition(miubicacion);
+
+}
+
+function errorGPS(){
+alerta(" no puedo encontrarte :(");
+}
+
+
+    </script>
+  </head>
+  
+  <body onload="initialize(), mostrarUbicacion()">
+    
+    <div id="map_canvas"></div>
+    
+    
+  </body>
+</html>
